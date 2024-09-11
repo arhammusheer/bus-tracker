@@ -80,4 +80,5 @@ Download as PDF [Bus tracker schematics.pdf](https://github.com/user-attachments
 <img width="830" alt="image" src="https://github.com/user-attachments/assets/6ce0a8ba-cf36-4b69-af0f-572f1980ae57">
 
 
-
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
