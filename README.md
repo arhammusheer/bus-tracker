@@ -2,6 +2,10 @@
 
 Welcome to the **Bus Tracker** project! This project involves an ESP32 and Arduino setup that interacts with a server via HTTP to retrieve timing data for bus schedules and display it on a MAX72XX 7-segment LED display. It communicates wirelessly, receiving data from a server and then counting down the time on the display. Here's a quick guide to what the code does and how to set everything up.
 
+## Demo Image
+<img width="867" alt="image" src="https://github.com/user-attachments/assets/50544e3f-4da6-460f-877f-24a567a0607d">
+
+
 ## Hardware Requirements
 - **ESP32**: To handle Wi-Fi connectivity and HTTP requests.
 - **MAX7221 7-Segment LED Display**: Displays the bus countdown times in MM:SS format. (I've used MAX7221CNG+)
@@ -68,5 +72,7 @@ For API request and bus data sources refer to the home-apis repository. https://
 - **Countdown Logic**: The bus arrival time is received in seconds, converted to MM:SS, and displayed on the MAX72XX. If no valid data is available, it dims the display and shows dashes (`----`).
 
 ## Schematics
+Download as PDF [Bus tracker schematics.pdf](https://github.com/user-attachments/files/16958053/Bus.tracker.schematics.pdf)
 
-To be uploaded soon.
+![Bus tracker schematics](https://github.com/user-attachments/assets/4a518af6-8a03-4688-a62d-755465d72eec)
+
