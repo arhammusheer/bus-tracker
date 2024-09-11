@@ -76,3 +76,8 @@ Download as PDF [Bus tracker schematics.pdf](https://github.com/user-attachments
 
 ![Bus tracker schematics](https://github.com/user-attachments/assets/4a518af6-8a03-4688-a62d-755465d72eec)
 
+## Request Flow
+<img width="830" alt="image" src="https://github.com/user-attachments/assets/6ce0a8ba-cf36-4b69-af0f-572f1980ae57">
+
+
+
