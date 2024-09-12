@@ -21,10 +21,10 @@ unsigned long delaytime = 250;
 
 void setup() {
   // Start the main serial communication (USB serial)
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   // Start software serial communication
-  mySerial.begin(115200);
+  mySerial.begin(9600);
 
   // Wake up the MAX72XX from power-saving mode
   lc.shutdown(0, false);

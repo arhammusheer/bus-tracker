@@ -1,7 +1,7 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <EEPROM.h>
-#include <HardwareSerial.h>
+#include "HardwareSerial.h"
 
 // Define the pin that will trigger the credential input mode
 #define MODE_PIN 14  // Change to your pin number
@@ -11,8 +11,6 @@
 #define SSID_ADDR 0
 #define PASSWORD_ADDR 32
 #define URL_ADDR 96  // HTTP URL starts here
-
-HardwareSerial Serial1(1);  // UART1 on ESP32
 
 String ssid = "";
 String password = "";
@@ -26,8 +24,7 @@ void setup() {
   Serial.begin(115200);
 
   // Initialize Serial1 for RX2/TX2 output (on pins 16 and 17 for ESP32)
-  Serial1.begin(115200);
-
+  Serial1.begin(9600, SERIAL_8N1, 16, 17);
   // Initialize EEPROM
   EEPROM.begin(EEPROM_SIZE);
 
@@ -208,7 +205,7 @@ void makeHttpCall() {
       // Get the response payload, which should be a number in seconds
       String payload = http.getString();
       int responseSeconds = payload.toInt();  // Convert response to integer
-      
+
       // Output only the seconds number on Serial1 (TX2/RX2)
       Serial1.println(payload);  // Output only seconds on TX2
       Serial.print("Seconds: ");
@@ -242,8 +239,10 @@ void calculateDelay(int secondsFromNow) {
     delayInterval = 30;  // Check every 30 seconds
   }
   // 2 minutes left, check every 5 seconds
-  else if (secondsFromNow <= 120) {
+  else if (secondsFromNow <= 120 && secondsFromNow >= 0) {
     delayInterval = 5;  // Check every 5 seconds
+  } else {
+    delayInterval = 60; // If no bus time, delay should be a minute
   }
 
   Serial.print("Next check in ");
