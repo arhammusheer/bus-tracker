@@ -15,16 +15,18 @@
 String ssid = "";
 String password = "";
 String httpUrl = "";
+String lastHttpResponse = "";  // New variable to store the last HTTP response
 
 unsigned long delayInterval = 0;
 unsigned long lastMillis = 0;
 
 void setup() {
   // Initialize Serial for debugging
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   // Initialize Serial1 for RX2/TX2 output (on pins 16 and 17 for ESP32)
   Serial1.begin(9600, SERIAL_8N1, 16, 17);
+
   // Initialize EEPROM
   EEPROM.begin(EEPROM_SIZE);
 
@@ -49,13 +51,38 @@ void setup() {
     }
   }
 }
-
 void loop() {
   // Check if it's time for the next HTTP call
   unsigned long currentMillis = millis();
   if (currentMillis - lastMillis >= delayInterval * 1000) {
     lastMillis = currentMillis;
     makeHttpCall();
+  }
+
+   // Check if Serial1 received any data
+  if (Serial1.available()) {
+    char received = Serial1.read();
+    if (received == 'R') {
+      delay(5); // Delay for Serial to settle
+      // Send the last HTTP response over Serial1
+      Serial1.println(lastHttpResponse);
+      Serial.print("Sent last HTTP response over Serial1. Response: ");
+      Serial.println(lastHttpResponse);
+    }
+  }
+
+
+  // Check if Serial (USB/Monitor) received any data
+  if (Serial.available()) {
+    String receivedSerialCommand = Serial.readStringUntil('\n');
+    receivedSerialCommand.trim();  // Remove any newline characters or extra spaces
+
+    if (receivedSerialCommand.equals("SEND")) {
+      // Send the last HTTP response over Serial1 when "SEND" command is received
+      Serial1.println(lastHttpResponse);
+      Serial.print("Sent last HTTP response over Serial1 in response to SEND command. Response: ");
+      Serial.println(lastHttpResponse);
+    }
   }
 }
 
@@ -204,6 +231,8 @@ void makeHttpCall() {
     if (httpCode > 0) {
       // Get the response payload, which should be a number in seconds
       String payload = http.getString();
+      lastHttpResponse = payload;  // Store the last response in global variable
+
       int responseSeconds = payload.toInt();  // Convert response to integer
 
       // Output only the seconds number on Serial1 (TX2/RX2)
@@ -228,7 +257,7 @@ void makeHttpCall() {
 void calculateDelay(int secondsFromNow) {
   // More than 1 hour (3600 seconds)
   if (secondsFromNow > 3600) {
-    delayInterval = secondsFromNow;
+    delayInterval = 300;  // Check every 5 minutes
   }
   // 1 hour left, check every 1 minute
   else if (secondsFromNow <= 3600 && secondsFromNow > 600) {
@@ -242,7 +271,7 @@ void calculateDelay(int secondsFromNow) {
   else if (secondsFromNow <= 120 && secondsFromNow >= 0) {
     delayInterval = 5;  // Check every 5 seconds
   } else {
-    delayInterval = 60; // If no bus time, delay should be a minute
+    delayInterval = 60;  // If no bus time, delay should be a minute
   }
 
   Serial.print("Next check in ");
